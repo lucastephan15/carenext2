@@ -43,6 +43,9 @@ def main():
     st.title("🏡 Care Next: Encontre o Melhor Cuidado para Idosos")
     st.write("Selecione o tipo de cuidado e preencha os campos específicos para encontrar as melhores opções.")
 
+    # Add API key input to sidebar
+    openai_api_key = st.sidebar.text_input("OpenAI API Key", type="password")
+
     location = st.text_input("Onde", placeholder="Cidade ou região")
     care_type = st.selectbox("Tipo de cuidado", ["", "Casa de Repouso", "Cuidador Domiciliar"])
 
@@ -55,12 +58,14 @@ def main():
         if st.button('Buscar Recomendações', use_container_width=True):
             if not location:
                 st.warning("Por favor, informe a localização desejada.")
+            elif not openai_api_key:
+                st.warning("Por favor, insira uma chave de API OpenAI válida na barra lateral.")
             else:
                 with st.spinner("Buscando as melhores opções para você..."):
                     if care_type == "Casa de Repouso":
-                        results = get_recommendations(location, care_type, start_date, end_date, special_needs, level_of_care, amenities)
+                        results = get_recommendations(location, care_type, start_date, end_date, special_needs, level_of_care, amenities, openai_api_key)
                     else:  # Cuidador Domiciliar
-                        results = get_recommendations(location, care_type, start_date, end_date, special_skills, frequency, hours_per_day)
+                        results = get_recommendations(location, care_type, start_date, end_date, special_skills, frequency, hours_per_day, openai_api_key)
                 
                 st.subheader("Recomendações Personalizadas")
                 for result in results:
@@ -69,8 +74,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-
-    ## decidi que nao vou usar base de dados coisa nenhuma, vou pedir pro chatgpt gerar ao vivo ali 5 recomendações aleatórias de acordo com o que a pessoa precisa 

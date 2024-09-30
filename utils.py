@@ -1,10 +1,13 @@
 import streamlit as st
 from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
-from datetime import datetime
 
-def get_recommendations(location, care_type, start_date, end_date, special_needs, level_of_care, amenities):
-    llm = ChatOpenAI(model="gpt-4", api_key=st.secrets["OPENAI_API_KEY"])
+def get_recommendations(location, care_type, start_date, end_date, special_needs, level_of_care, amenities, openai_api_key):
+    if not openai_api_key:
+        st.error("Please enter an OpenAI API key to proceed.")
+        return []
+
+    llm = ChatOpenAI(model="gpt-4o", api_key=openai_api_key)
     
     prompt = PromptTemplate.from_template("""
     Com base nos seguintes critérios, gere 3 recomendações fictícias de cuidados para idosos:
